@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookStore</title>
+    <link rel="stylesheet" href="cssfile.css" />
+  </head>
+  <body>
+    <h1 class="movingh1">Welcome to Book Store</h1>
+
+    <!-- Search Bar -->
+    <div class="search-section">
+      <input
+        type="search"
+        placeholder="Search for books..."
+        class="searchbar"
+        id="searchInput"
+        onkeyup="searchBooks()"
+      />
+
+      <!-- User Profile -->
+      <div class="user-profile" id="userProfile">
+        <div class="user-menu">
+          <span
+            id="userName"
+            style="cursor: pointer"
+            onclick="toggleUserDropdown()"
+            >User</span
+          >
+          <div class="user-dropdown" id="userDropdown">
+            <a href="#" onclick="showSection('orders')">Order History</a>
+            <a href="#" onclick="showSection('wishlist')">Wishlist</a>
+            <a href="#" onclick="logout()">Logout</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auth Buttons -->
+      <div id="authButtons">
+        <button
+          onclick="showSection('auth')"
+          style="
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Login / Register
+        </button>
+      </div>
+
+      <button class="cart" onclick="opencart()">
+        Cart <span class="cart_count">0</span>
+      </button>
+    </div>
+
+    <div class="navbar">
+      <a href="#home" onclick="showSection('home')" class="nav-active">Home</a>
+      <a href="#books" onclick="showSection('books')">Books</a>
+      <a href="#about" onclick="showSection('about')">About</a>
+      <a href="#contact" onclick="showSection('contact')">Contact</a>
+      <a href="#cart" onclick="opencart()">Cart</a>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Cart Notification -->
+    <div class="cart-notification" id="cartNotification">
+      Book added to cart!
+    </div>
+
+    <!-- Authentication Section -->
+    <div id="auth-section" class="auth-section">
+      <div class="auth-form">
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="showAuthTab('login')">
+            Login
+          </button>
+          <button class="auth-tab" onclick="showAuthTab('register')">
+            Register
+          </button>
+        </div>
+
+        <div id="login-content" class="auth-content active">
+          <h3>Login to Your Account</h3>
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Enter your password"
+            />
+          </div>
+          <button
+            onclick="login()"
+            style="
+              background: #3498db;
+              color: white;
+              padding: 12px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              width: 100%;
+            "
+          >
+            Login
+          </button>
+        </div>
+
+        <div id="register-content" class="auth-content">
+          <h3>Create New Account</h3>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input
+              type="text"
+              id="registerName"
+              placeholder="Enter your full name"
+            />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              id="registerEmail"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              id="registerPassword"
+              placeholder="Create a password"
+            />
+          </div>
+          <button
+            onclick="register()"
+            style="
+              background: #27ae60;
+              color: white;
+              padding: 12px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              width: 100%;
+            "
+          >
+            Register
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home Section -->
+    <div id="home-section" class="home-section">
+      <h2>Discover Your Next Favorite Book</h2>
+      <p>
+        Welcome to our online bookstore! Explore thousands of books across
+        various genres. From bestsellers to hidden gems, we have something for
+        every reader.
+      </p>
+      <button
+        onclick="showSection('books')"
+        style="
+          background: #e74c3c;
+          color: white;
+          padding: 15px 30px;
+          border: none;
+          border-radius: 5px;
+          font-size: 18px;
+          cursor: pointer;
+        "
+      >
+        Start Exploring Books
+      </button>
+    </div>
+
+    <!-- Books Section -->
+    <div id="books-section" style="display: none">
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <label
+          for="categoryFilter"
+          style="font-weight: bold; margin-right: 10px"
+          >Filter by Category:</label
+        >
+        <select id="categoryFilter" onchange="filterBooksByCategory()">
+          <option value="all">All Categories</option>
+        </select>
+        <button
+          onclick="showCategoryRows()"
+          style="
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Show by Categories
+        </button>
+        <button
+          onclick="showAllBooks()"
+          style="
+            background: #95a5a6;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Show All Mixed
+        </button>
+      </div>
+
+      <!-- Search Results -->
+      <div
+        id="search-results"
+        class="search-results"
+        style="display: none"
+      ></div>
+
+      <!-- Book listing container -->
+      <div id="books-by-category"></div>
+    </div>
+
+    <!-- Wishlist Section -->
+    <div id="wishlist-section" class="books-section" style="display: none">
+      <h2 style="text-align: center; margin-bottom: 30px">Your Wishlist</h2>
+      <div id="wishlist-books" class="books-grid"></div>
+    </div>
+
+    <!-- Orders Section -->
+    <div id="orders-section" class="orders-section">
+      <h2 style="text-align: center; margin-bottom: 30px">
+        Your Order History
+      </h2>
+      <div id="orders-list"></div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about-section" class="about-section">
+      <div class="about-content">
+        <h2>About Our Bookstore</h2>
+        <p>
+          Founded with a passion for literature, our bookstore has been serving
+          book lovers for over a decade. We believe in the power of stories to
+          transform lives and connect people across boundaries.
+        </p>
+        <p>
+          Our mission is to make quality literature accessible to everyone. We
+          carefully curate our collection to include diverse voices, classic
+          masterpieces, and contemporary works that inspire and entertain.
+        </p>
+        <p>
+          Whether you're a casual reader or a dedicated bibliophile, we're here
+          to help you discover your next great read.
+        </p>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div id="contact-section" class="contact-section">
+      <div class="contact-content">
+        <h2 style="text-align: center; color: #2c3e50; margin-bottom: 40px">
+          Contact Us
+        </h2>
+        <div class="contact-info">
+          <div class="contact-card">
+            <h3>📍 Address</h3>
+            <p>BTM 9th cross<br />Banglore Karnataka</p>
+          </div>
+          <div class="contact-card">
+            <h3>📞 Phone</h3>
+            <p>+91-9985606336<br />Mon-Fri: 9AM-6PM</p>
+          </div>
+          <div class="contact-card">
+            <h3>✉️ Email</h3>
+            <p>info@bookstore.com<br />support@bookstore.com</p>
+          </div>
+          <div class="contact-card">
+            <h3>Store Hours</h3>
+            <p>Mon-Sat: 10AM-8PM<br />Sunday: 12PM-6PM</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cart section -->
+    <div
+      id="cart-section"
+      class="cart-section"
+      style="
+        display: none;
+        padding: 20px;
+        border: 1px solid black;
+        margin: 10px 0;
+        background: white;
+      "
+    >
+      <h2>
+        Your Cart
+        <button
+          onclick="closeCart()"
+          style="
+            float: right;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Close
+        </button>
+        <!-- CHANGED: Updated to show address section instead of direct payment -->
+        <button
+          onclick="showAddressSection()"
+          style="
+            float: right;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+          "
+        >
+          Proceed to Payment
+        </button>
+      </h2>
+      <ul id="cart_list"></ul>
+
+      <!-- Total Amount Section -->
+      <div class="cart-total" id="cartTotal" style="display: none">
+        <span>Total Amount: </span>
+        <span class="total-amount" id="totalAmount">₹0</span>
+      </div>
+
+      <!-- recommended books inside the cart-->
+      <div class="recommendedbooks" id="recommendedBooks">
+        <h2>Similar Books</h2>
+        <div class="recommendedbooks-container" id="recommendedContainer">
+          <!-- similar books are appeared here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: Address Section -->
+    <div id="address-section" class="address-section" style="display: none">
+      <div class="address-form">
+        <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px">
+          Delivery Address
+        </h2>
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input
+            type="text"
+            id="deliveryName"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input
+            type="tel"
+            id="deliveryPhone"
+            placeholder="Enter your phone number"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Address Line 1</label>
+          <input
+            type="text"
+            id="addressLine1"
+            placeholder="House/Flat No, Building"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Address Line 2</label>
+          <input
+            type="text"
+            id="addressLine2"
+            placeholder="Street, Area"
+            required
+          />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="city" placeholder="City" required />
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" id="state" placeholder="State" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+          <div class="form-group">
+            <label>Pincode</label>
+            <input type="text" id="pincode" placeholder="Pincode" required />
+          </div>
+          <div class="form-group">
+            <label>Landmark (Optional)</label>
+            <input type="text" id="landmark" placeholder="Nearby landmark" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            onclick="showPaymentOptions()"
+            style="
+              background: #27ae60;
+              color: white;
+              padding: 12px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              width: 100%;
+            "
+          >
+            Continue to Payment
+          </button>
+          <button
+            onclick="closeAddressSection()"
+            style="
+              background: #95a5a6;
+              color: white;
+              border: none;
+              padding: 12px;
+              border-radius: 5px;
+              cursor: pointer;
+              width: 100%;
+              margin-top: 10px;
+            "
+          >
+            Back to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: Payment Options Section -->
+    <div
+      id="payment-options-section"
+      class="payment-options-section"
+      style="display: none"
+    >
+      <div class="payment-options-form">
+        <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px">
+          Choose Payment Method
+        </h2>
+
+        <div class="payment-methods">
+          <div class="payment-method" onclick="selectPaymentMethod('card')">
+            <input
+              type="radio"
+              id="cardPayment"
+              name="paymentMethod"
+              value="card"
+            />
+            <label for="cardPayment">
+              <div class="payment-icon">💳</div>
+              <div class="payment-details">
+                <h4>Credit/Debit Card</h4>
+                <p>Pay using your card</p>
+              </div>
+            </label>
+          </div>
+
+          <div class="payment-method" onclick="selectPaymentMethod('upi')">
+            <input
+              type="radio"
+              id="upiPayment"
+              name="paymentMethod"
+              value="upi"
+            />
+            <label for="upiPayment">
+              <div class="payment-icon">📱</div>
+              <div class="payment-details">
+                <h4>UPI Payment</h4>
+                <p>Google Pay, PhonePe, Paytm</p>
+              </div>
+            </label>
+          </div>
+
+          <div class="payment-method" onclick="selectPaymentMethod('razorpay')">
+            <input
+              type="radio"
+              id="razorpayPayment"
+              name="paymentMethod"
+              value="razorpay"
+            />
+            <label for="razorpayPayment">
+              <div class="payment-icon">🔗</div>
+              <div class="payment-details">
+                <h4>Razorpay</h4>
+                <p>Secure online payment</p>
+              </div>
+            </label>
+          </div>
+
+          <div class="payment-method" onclick="selectPaymentMethod('cod')">
+            <input
+              type="radio"
+              id="codPayment"
+              name="paymentMethod"
+              value="cod"
+            />
+            <label for="codPayment">
+              <div class="payment-icon">💰</div>
+              <div class="payment-details">
+                <h4>Cash on Delivery</h4>
+                <p>Pay when you receive</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            onclick="proceedToSelectedPayment()"
+            style="
+              background: #27ae60;
+              color: white;
+              padding: 12px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              width: 100%;
+            "
+          >
+            Continue with Selected Payment
+          </button>
+          <button
+            onclick="closePaymentOptions()"
+            style="
+              background: #95a5a6;
+              color: white;
+              border: none;
+              padding: 12px;
+              border-radius: 5px;
+              cursor: pointer;
+              width: 100%;
+              margin-top: 10px;
+            "
+          >
+            Back to Address
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: Card Payment Section -->
+    <div
+      id="card-payment-section"
+      class="payment-section"
+      style="display: none"
+    >
+      <div class="payment-form">
+        <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px">
+          Card Payment
+        </h2>
+        <div class="form-group">
+          <label>Card Number</label>
+          <input
+            type="text"
+            id="cardNumber"
+            placeholder="1234 5678 9012 3456"
+            maxlength="19"
+          />
+        </div>
+        <div class="form-group">
+          <label>Card Holder Name</label>
+          <input type="text" id="cardHolderName" placeholder="John Doe" />
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+          <div class="form-group">
+            <label>Expiry Date</label>
+            <input
+              type="text"
+              id="cardExpiry"
+              placeholder="MM/YY"
+              maxlength="5"
+            />
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" id="cardCvv" placeholder="123" maxlength="3" />
+          </div>
+        </div>
+        <button class="pay-button" onclick="processCardPayment()">
+          Pay Now
+        </button>
+        <button
+          onclick="closeCardPayment()"
+          style="
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+          "
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- NEW: UPI Payment Section -->
+    <div id="upi-payment-section" class="payment-section" style="display: none">
+      <div class="payment-form">
+        <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px">
+          UPI Payment
+        </h2>
+        <div class="form-group">
+          <label>UPI ID</label>
+          <input type="text" id="upiId" placeholder="yourname@upi" />
+        </div>
+        <div class="upi-apps">
+          <h4>Choose UPI App:</h4>
+          <div class="upi-apps-grid">
+            <div class="upi-app" onclick="selectUpiApp('gpay')">
+              <div class="upi-icon">📱</div>
+              <span>Google Pay</span>
+            </div>
+            <div class="upi-app" onclick="selectUpiApp('phonepe')">
+              <div class="upi-icon">📱</div>
+              <span>PhonePe</span>
+            </div>
+            <div class="upi-app" onclick="selectUpiApp('paytm')">
+              <div class="upi-icon">📱</div>
+              <span>Paytm</span>
+            </div>
+          </div>
+        </div>
+        <button class="pay-button" onclick="processUpiPayment()">
+          Pay via UPI
+        </button>
+        <button
+          onclick="closeUpiPayment()"
+          style="
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+          "
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-content">
+        <p>&copy; 2025 BookStore. All rights reserved.</p>
+        <p>Your favorite online destination for books</p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
